@@ -1,0 +1,1448 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>متجر الواجبات | منصة المستقبل</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0a0a1a;
+            --bg-card: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --primary: #6C63FF;
+            --secondary: #FF6584;
+            --accent: #00F5A0;
+            --gold: #FFD166;
+            --text: #ffffff;
+            --muted: #a0a0c0;
+            --shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            --transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .light-theme {
+            --bg-dark: #f0f0f8;
+            --bg-card: rgba(0, 0, 0, 0.03);
+            --glass-border: rgba(0, 0, 0, 0.1);
+            --text: #0a0a1a;
+            --muted: #555577;
+            --shadow: 0 20px 60px rgba(0,0,0,0.1);
+            --primary: #6C63FF;
+            --secondary: #FF6584;
+            --accent: #00C48C;
+            --gold: #E6A700;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            transition: background 0.5s;
+        }
+
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a1a3e 40%, #0a0a1a 100%);
+            overflow: hidden;
+        }
+        .light-theme .bg-animation {
+            background: linear-gradient(135deg, #f0f0f8 0%, #e0e0f0 40%, #f0f0f8 100%);
+        }
+
+        .particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            animation: floatParticle linear infinite;
+            filter: blur(1px);
+        }
+
+        @keyframes floatParticle {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+        }
+
+        .glow-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.3;
+            animation: orbFloat 12s ease-in-out infinite alternate;
+        }
+
+        .glow-orb.purple {
+            width: 400px;
+            height: 400px;
+            background: var(--primary);
+            top: -100px;
+            right: -100px;
+        }
+
+        .glow-orb.pink {
+            width: 350px;
+            height: 350px;
+            background: var(--secondary);
+            bottom: -80px;
+            left: -80px;
+            animation-delay: 4s;
+        }
+
+        @keyframes orbFloat {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(80px, 60px) scale(1.2); }
+        }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+
+        .sidebar {
+            width: 280px;
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-left: 1px solid var(--glass-border);
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            transition: var(--transition);
+        }
+        .light-theme .sidebar {
+            background: rgba(255,255,255,0.5);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 900;
+            text-align: center;
+            background: linear-gradient(45deg, #6C63FF, #FF6584, #00F5A0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            padding: 14px 18px;
+            background: transparent;
+            border: none;
+            border-radius: 14px;
+            color: var(--muted);
+            font-family: 'Cairo', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: right;
+        }
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text);
+            transform: translateX(-5px);
+        }
+        .nav-btn.active {
+            background: linear-gradient(45deg, rgba(108,99,255,0.15), rgba(255,101,132,0.15));
+            color: var(--text);
+            border: 1px solid rgba(108,99,255,0.3);
+        }
+
+        .wallet-card {
+            margin-top: auto;
+            background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01));
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        .wallet-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent, rgba(108,99,255,0.2), transparent, rgba(255,101,132,0.2), transparent);
+            animation: rotateGlow 8s linear infinite;
+        }
+        @keyframes rotateGlow {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .wallet-card > * { position: relative; z-index: 1; }
+        .wallet-card h3 { margin-bottom: 12px; font-size: 1rem; color: var(--gold); }
+        .wallet-card p { font-size: 0.9rem; margin: 6px 0; color: #ccc; }
+        .wallet-card .phone { font-size: 1.4rem; font-weight: 900; color: var(--gold); letter-spacing: 1px; text-shadow: 0 0 20px rgba(255,209,102,0.5); }
+        .wallet-card .accounts { font-size: 0.85rem; color: #aaa; }
+        .wallet-card .accounts span { display: block; margin: 2px 0; font-weight: 600; }
+        .copy-btn {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            color: #fff;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.7rem;
+            padding: 4px 8px;
+            margin-right: 6px;
+            transition: var(--transition);
+        }
+        .copy-btn:hover { background: rgba(255,255,255,0.2); }
+
+        .theme-toggle {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid var(--glass-border);
+            border-radius: 50px;
+            color: var(--text);
+            padding: 10px 20px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+        .theme-toggle:hover { background: rgba(255,255,255,0.2); }
+
+        .main-content {
+            flex: 1;
+            padding: 40px 50px;
+            overflow-y: auto;
+            max-height: 100vh;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, rgba(108,99,255,0.2), rgba(255,101,132,0.2));
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(15px);
+            border-radius: 30px;
+            padding: 50px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 40px;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -30%;
+            left: -30%;
+            width: 160%;
+            height: 160%;
+            background: radial-gradient(circle, rgba(108,99,255,0.2) 0%, transparent 60%);
+            animation: heroGlow 6s ease-in-out infinite alternate;
+        }
+        @keyframes heroGlow {
+            0% { transform: scale(1); opacity: 0.5; }
+            100% { transform: scale(1.2); opacity: 0.8; }
+        }
+        .hero > * { position: relative; z-index: 1; }
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 900;
+            background: linear-gradient(45deg, #fff, #c0c0ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+        }
+        .hero p { font-size: 1.2rem; color: var(--muted); }
+        .welcome { margin-top: 20px; font-size: 1.3rem; color: var(--text); }
+
+        .auth-buttons { margin-top: 25px; display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
+
+        .btn {
+            padding: 14px 30px;
+            border-radius: 50px;
+            border: none;
+            font-family: 'Cairo', sans-serif;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            display: inline-block;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            transition: all 0.6s;
+            transform: translate(-50%, -50%);
+        }
+        .btn:active::after { width: 300px; height: 300px; }
+        .btn-primary {
+            background: linear-gradient(45deg, #6C63FF, #8B5CF6);
+            color: white;
+            box-shadow: 0 10px 30px rgba(108,99,255,0.4);
+        }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 15px 40px rgba(108,99,255,0.6); }
+        .btn-secondary { background: transparent; border: 2px solid var(--secondary); color: var(--secondary); }
+        .btn-secondary:hover { background: var(--secondary); color: white; transform: translateY(-3px); }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 900;
+            margin-bottom: 30px;
+            text-align: center;
+            background: linear-gradient(45deg, #FFD166, #FF6584);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .search-container { margin-bottom: 30px; display: flex; justify-content: center; }
+        .search-input {
+            width: 100%;
+            max-width: 400px;
+            padding: 14px 20px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 50px;
+            color: var(--text);
+            font-family: 'Cairo', sans-serif;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(108,99,255,0.1);
+            box-shadow: 0 0 20px rgba(108,99,255,0.3);
+        }
+
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 25px; }
+
+        .spec-card {
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(15px);
+            border-radius: 24px;
+            padding: 30px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        .spec-card:hover { transform: translateY(-10px) scale(1.02); box-shadow: var(--shadow); border-color: rgba(108,99,255,0.5); }
+        .spec-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+            transition: 0.5s;
+        }
+        .spec-card:hover::before { left: 100%; }
+        .spec-image-container { position: relative; width: 100%; height: 180px; margin-bottom: 15px; }
+        .spec-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 20px;
+            display: block;
+        }
+        .spec-emoji {
+            font-size: 4rem;
+            animation: bounce 2s infinite;
+            display: none;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .spec-card h3 { font-size: 1.3rem; font-weight: 900; margin-bottom: 10px; }
+        .prices { display: flex; flex-direction: column; gap: 6px; font-size: 0.9rem; color: var(--muted); }
+        .rating-stars { color: var(--gold); font-size: 1.2rem; }
+
+        .auth-form, .profile-card, .spec-detail, .admin-panel {
+            max-width: 500px;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 40px;
+            box-shadow: var(--shadow);
+        }
+        .auth-form h2, .profile-card h2, .admin-panel h2 { text-align: center; margin-bottom: 30px; font-size: 2rem; font-weight: 900; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--muted); }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 14px 18px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 14px;
+            color: var(--text);
+            font-family: 'Cairo', sans-serif;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(108,99,255,0.1);
+            box-shadow: 0 0 20px rgba(108,99,255,0.3);
+        }
+        select option { background: #1a1a3e; color: white; }
+
+        .password-strength { margin-top: 8px; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.1); overflow: hidden; }
+        .password-strength-bar { height: 100%; width: 0; transition: width 0.3s, background-color 0.3s; }
+        .strength-weak { background-color: #FF6584; }
+        .strength-medium { background-color: #FFD166; }
+        .strength-strong { background-color: #00F5A0; }
+
+        .loading-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(10,10,26,0.95);
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+        .loader {
+            width: 80px;
+            height: 80px;
+            border: 6px solid rgba(255,255,255,0.1);
+            border-top-color: var(--primary);
+            border-bottom-color: var(--secondary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .progress-container { width: 300px; height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; margin-top: 20px; overflow: hidden; }
+        .progress-bar { height: 100%; background: linear-gradient(90deg, var(--primary), var(--accent)); border-radius: 4px; transition: width 0.3s; width: 0%; }
+
+        .spec-detail { text-align: center; }
+        .spec-emoji-large { font-size: 6rem; margin-bottom: 20px; animation: bounce 2s infinite; }
+        .pricing { display: flex; justify-content: center; gap: 20px; margin: 30px 0; flex-wrap: wrap; }
+        .price-box {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 20px;
+            flex: 1;
+            min-width: 100px;
+            transition: var(--transition);
+        }
+        .price-box:hover { transform: translateY(-5px); border-color: var(--accent); box-shadow: 0 10px 25px rgba(0,245,160,0.2); }
+        .price-box span { display: block; color: var(--muted); margin-bottom: 5px; }
+        .price-box strong { font-size: 1.6rem; color: var(--accent); }
+        .purchase-form { margin-top: 30px; }
+
+        .chat-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            height: 80vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .chat-header { text-align: center; margin-bottom: 20px; font-size: 1.5rem; font-weight: 900; }
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            background: rgba(255,255,255,0.02);
+            border-radius: 20px;
+            margin-bottom: 20px;
+        }
+        .message {
+            margin-bottom: 12px;
+            padding: 10px 15px;
+            border-radius: 15px;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+        .message.sent {
+            background: linear-gradient(45deg, rgba(108,99,255,0.3), rgba(139,92,246,0.3));
+            align-self: flex-end;
+            border: 1px solid rgba(108,99,255,0.4);
+            margin-left: auto;
+        }
+        .message.received {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--glass-border);
+            align-self: flex-start;
+        }
+        .message .msg-username { font-weight: 700; font-size: 0.8rem; color: var(--gold); margin-bottom: 3px; }
+        .message .msg-text { font-size: 0.95rem; }
+        .message .msg-time { font-size: 0.7rem; color: var(--muted); margin-top: 3px; text-align: left; }
+
+        .chat-input-form { display: flex; gap: 10px; }
+        .chat-input-form input {
+            flex: 1;
+            border-radius: 50px;
+            padding: 14px 20px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--glass-border);
+            color: var(--text);
+        }
+        .chat-input-form button {
+            border-radius: 50px;
+            padding: 14px 25px;
+            background: linear-gradient(45deg, #6C63FF, #8B5CF6);
+            border: none;
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .chat-input-form button:hover { transform: translateY(-2px); }
+
+        .flash-container {
+            position: fixed;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 200;
+            width: auto;
+            max-width: 90%;
+        }
+        .flash {
+            padding: 18px 30px;
+            border-radius: 50px;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.2);
+            margin-bottom: 15px;
+            animation: slideDown 0.5s ease;
+            font-weight: 700;
+        }
+        .flash-success { background: rgba(0,245,160,0.2); border-color: var(--accent); color: var(--accent); }
+        .flash-error { background: rgba(255,101,132,0.2); border-color: var(--secondary); color: var(--secondary); }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-50px); } to { opacity: 1; transform: translateY(0); } }
+
+        .scroll-top-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(108,99,255,0.5);
+            transition: var(--transition);
+            z-index: 50;
+            display: none;
+        }
+        .scroll-top-btn:hover { transform: translateY(-5px); }
+
+        .orders-list, .cart-list, .user-list {
+            margin-top: 20px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 20px;
+        }
+        .order-item, .cart-item, .user-item {
+            padding: 15px;
+            border-bottom: 1px solid var(--glass-border);
+            font-size: 0.95rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .order-item:last-child, .cart-item:last-child, .user-item:last-child { border-bottom: none; }
+
+        .rating-input { direction: ltr; unicode-bidi: bidi-override; }
+        .rating-input span { cursor: pointer; font-size: 2rem; color: #ccc; }
+        .rating-input span.active { color: var(--gold); }
+
+        @media (max-width: 768px) {
+            .layout { flex-direction: column; }
+            .sidebar { width: 100%; flex-direction: row; flex-wrap: wrap; align-items: center; padding: 20px; }
+            .main-content { padding: 20px; }
+            .hero h1 { font-size: 2.2rem; }
+            .grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-animation" id="bgAnimation"></div>
+    <div class="glow-orb purple"></div>
+    <div class="glow-orb pink"></div>
+
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="logo">🎓 متجر الواجبات</div>
+            <nav>
+                <button class="nav-btn active" data-page="home" onclick="navigate('home')">🏠 الصفحة الرئيسية</button>
+                <button class="nav-btn" id="profileNav" style="display:none;" data-page="profile" onclick="navigate('profile')">👤 الملف الشخصي</button>
+                <button class="nav-btn" id="chatNav" style="display:none;" data-page="chat" onclick="navigate('chat')">💬 الدردشة</button>
+                <button class="nav-btn" id="cartNav" style="display:none;" data-page="cart" onclick="navigate('cart')">🛒 سلة المشتريات <span id="cartCount" style="background:var(--secondary); border-radius:50%; padding:2px 8px; font-size:0.8rem;">0</span></button>
+                <button class="nav-btn" id="adminNav" style="display:none;" data-page="admin" onclick="navigate('admin')">⚙️ لوحة التحكم</button>
+                <button class="nav-btn" id="loginNav" data-page="login" onclick="navigate('login')">🔑 تسجيل دخول</button>
+                <button class="nav-btn" id="registerNav" data-page="register" onclick="navigate('register')">📝 إنشاء حساب</button>
+                <button class="nav-btn" id="logoutNav" style="display:none;" onclick="logout()">🚪 تسجيل خروج</button>
+            </nav>
+            <button class="theme-toggle" onclick="toggleTheme()">🌓 تبديل الوضع</button>
+            <div class="wallet-card">
+                <h3>💳 محفظة الدفع</h3>
+                <p class="phone">📞 0779631789 <button class="copy-btn" onclick="copyText('0779631789')">نسخ</button></p>
+                <p class="accounts">
+                    <span>👤 q._.cv <button class="copy-btn" onclick="copyText('q._.cv')">نسخ</button></span>
+                    <span>👤 hamam.otoom <button class="copy-btn" onclick="copyText('hamam.otoom')">نسخ</button></span>
+                </p>
+            </div>
+        </aside>
+
+        <main class="main-content" id="mainContent"></main>
+    </div>
+
+    <button class="scroll-top-btn" id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+    <script>
+        // ==================== البيانات ====================
+        const specializations = [
+            { id: 1, name: 'تكنولوجيا المعلومات', emoji: '💻', desc: 'جميع واجبات تكنولوجيا المعلومات لجميع الصفوف.', prices: { grade10: 6, grade11: 10, tawjihi: 15 }, image: 'https://loremflickr.com/200/200/laptop,computer' },
+            { id: 2, name: 'الهندسة', emoji: '⚙️', desc: 'واجبات هندسة دقيقة وممتازة.', prices: { grade10: 6, grade11: 10, tawjihi: 15 }, image: 'https://loremflickr.com/200/200/engineering,gears' },
+            { id: 3, name: 'الألعاب والرياضات الإلكترونية', emoji: '🎮', desc: 'واجبات الألعاب والرياضات الإلكترونية.', prices: { grade10: 6, grade11: 10, tawjihi: 15 }, image: 'https://loremflickr.com/200/200/gaming,controller' },
+            { id: 4, name: 'إدارة الأعمال', emoji: '📊', desc: 'واجبات إدارة الأعمال بجودة عالية.', prices: { grade10: 6, grade11: 10, tawjihi: 15 }, image: 'https://loremflickr.com/200/200/business,office' },
+            { id: 5, name: 'الضيافة', emoji: '🍽️', desc: 'واجبات الضيافة والفندقة.', prices: { grade10: 6, grade11: 10, tawjihi: 15 }, image: 'https://loremflickr.com/200/200/hotel,restaurant' },
+            { id: 6, name: 'الريادة', emoji: '🚀', desc: 'واجبات الريادة والأعمال الريادية.', prices: { grade10: 6, grade11: 10, tawjihi: 15 }, image: 'https://loremflickr.com/200/200/startup,entrepreneur' },
+            { id: 7, name: 'الصحية', emoji: '🏥', desc: 'واجبات العلوم الصحية والتمريض.', prices: { grade10: 6, grade11: 10, tawjihi: 15 }, image: 'https://loremflickr.com/200/200/health,medical' },
+            { id: 8, name: 'رعاية الطفولة', emoji: '🧒', desc: 'واجبات رعاية الطفولة.', prices: { grade10: 5, grade11: 8, tawjihi: 10 }, image: 'https://loremflickr.com/200/200/childcare,kids' },
+            { id: 9, name: 'الوسائط الإبداعية', emoji: '🎨', desc: 'واجبات الوسائط الإبداعية والتصميم الرقمي.', prices: { grade10: 5, grade11: 8, tawjihi: 10 }, image: 'https://loremflickr.com/200/200/creative,media' },
+            { id: 10, name: 'الفن والتصميم', emoji: '🖌️', desc: 'واجبات الفن والتصميم.', prices: { grade10: 5, grade11: 8, tawjihi: 10 }, image: 'https://loremflickr.com/200/200/art,design' },
+            { id: 11, name: 'الزراعة', emoji: '🌱', desc: 'واجبات الزراعة والعلوم الزراعية.', prices: { grade10: 5, grade11: 8, tawjihi: 10 }, image: 'https://loremflickr.com/200/200/agriculture,farm' },
+            { id: 12, name: 'الرياضة', emoji: '🏃', desc: 'واجبات الرياضة والتربية البدنية.', prices: { grade10: 6, grade11: 10, tawjihi: 15 }, image: 'https://loremflickr.com/200/200/running,sports' }
+        ];
+
+        const gradeNames = { grade10: 'عاشر', grade11: 'أول ثانوي', tawjihi: 'توجيهي' };
+
+        // ==================== إدارة المستخدمين ====================
+        function getUsers() { return JSON.parse(localStorage.getItem('users') || '[]'); }
+        function saveUsers(users) { localStorage.setItem('users', JSON.stringify(users)); }
+        function getCurrentUser() { const username = localStorage.getItem('currentUser'); return getUsers().find(u => u.username === username) || null; }
+        function setCurrentUser(username) { localStorage.setItem('currentUser', username); }
+        function logoutUser() { localStorage.removeItem('currentUser'); }
+        function hashPassword(pass) { return btoa(unescape(encodeURIComponent(pass))); }
+
+        // إنشاء حسابات الأدمن الافتراضية
+        function initAdminAccounts() {
+            const users = getUsers();
+            const admins = [
+                { full_name: 'مدير النظام 1', username: 'admin1', passwordHash: hashPassword('Admin@123'), grade: 'توجيهي', phone: '', role: 'admin' },
+                { full_name: 'مدير النظام 2', username: 'admin2', passwordHash: hashPassword('Admin@456'), grade: 'توجيهي', phone: '', role: 'admin' },
+                { full_name: 'مدير النظام 3', username: 'admin3', passwordHash: hashPassword('Admin@789'), grade: 'توجيهي', phone: '', role: 'admin' }
+            ];
+            admins.forEach(admin => {
+                if (!users.some(u => u.username === admin.username)) {
+                    users.push(admin);
+                }
+            });
+            saveUsers(users);
+        }
+
+        // ==================== سجل الطلبات ====================
+        function getUserOrders(username) {
+            return JSON.parse(localStorage.getItem('orders_' + username) || '[]');
+        }
+        function saveOrder(username, order) {
+            const orders = getUserOrders(username);
+            orders.push(order);
+            localStorage.setItem('orders_' + username, JSON.stringify(orders));
+        }
+
+        // ==================== سلة المشتريات ====================
+        function getCart() {
+            const user = getCurrentUser();
+            if (!user) return [];
+            return JSON.parse(localStorage.getItem('cart_' + user.username) || '[]');
+        }
+        function saveCart(cart) {
+            const user = getCurrentUser();
+            if (user) localStorage.setItem('cart_' + user.username, JSON.stringify(cart));
+            updateCartCount();
+        }
+        function updateCartCount() {
+            const count = getCart().length;
+            const badge = document.getElementById('cartCount');
+            if (badge) badge.textContent = count;
+        }
+
+        // ==================== التقييمات ====================
+        function getRatings(specId) {
+            return JSON.parse(localStorage.getItem('ratings_' + specId) || '[]');
+        }
+        function saveRating(specId, userId, stars) {
+            let ratings = getRatings(specId);
+            const existing = ratings.find(r => r.userId === userId);
+            if (existing) existing.stars = stars;
+            else ratings.push({ userId, stars });
+            localStorage.setItem('ratings_' + specId, JSON.stringify(ratings));
+        }
+        function getAverageRating(specId) {
+            const ratings = getRatings(specId);
+            if (ratings.length === 0) return 0;
+            const sum = ratings.reduce((acc, r) => acc + r.stars, 0);
+            return (sum / ratings.length).toFixed(1);
+        }
+
+        // ==================== الدردشة ====================
+        function getChatMessages() {
+            return JSON.parse(localStorage.getItem('chat_messages') || '[]');
+        }
+        function saveChatMessage(message) {
+            const messages = getChatMessages();
+            messages.push(message);
+            localStorage.setItem('chat_messages', JSON.stringify(messages));
+        }
+
+        // ==================== التنقل ====================
+        function updateNav() {
+            const user = getCurrentUser();
+            document.getElementById('loginNav').style.display = user ? 'none' : 'block';
+            document.getElementById('registerNav').style.display = user ? 'none' : 'block';
+            document.getElementById('profileNav').style.display = user ? 'block' : 'none';
+            document.getElementById('chatNav').style.display = user ? 'block' : 'none';
+            document.getElementById('cartNav').style.display = user ? 'block' : 'none';
+            document.getElementById('logoutNav').style.display = user ? 'block' : 'none';
+            document.getElementById('adminNav').style.display = (user && user.role === 'admin') ? 'block' : 'none';
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            updateCartCount();
+        }
+
+        function navigate(page, param = null) {
+            updateNav();
+            const activeBtn = document.querySelector(`.nav-btn[data-page="${page}"]`);
+            if (activeBtn) activeBtn.classList.add('active');
+            const main = document.getElementById('mainContent');
+            switch(page) {
+                case 'home': renderHome(main); break;
+                case 'login': renderLogin(main); break;
+                case 'register': renderRegister(main); break;
+                case 'profile': 
+                    if (!getCurrentUser()) { renderLogin(main); break; }
+                    renderProfile(main); 
+                    break;
+                case 'chat':
+                    if (!getCurrentUser()) { renderLogin(main); break; }
+                    renderChat(main);
+                    break;
+                case 'cart':
+                    if (!getCurrentUser()) { renderLogin(main); break; }
+                    renderCart(main);
+                    break;
+                case 'admin':
+                    if (!getCurrentUser() || getCurrentUser().role !== 'admin') { renderLogin(main); break; }
+                    renderAdminPanel(main);
+                    break;
+                case 'spec': 
+                    if (!getCurrentUser()) { renderLogin(main); break; }
+                    renderSpec(main, param); 
+                    break;
+                default: renderHome(main);
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            toggleScrollTop();
+        }
+
+        window.addEventListener('scroll', toggleScrollTop);
+        function toggleScrollTop() {
+            const btn = document.getElementById('scrollTopBtn');
+            if (window.scrollY > 300) btn.style.display = 'block';
+            else btn.style.display = 'none';
+        }
+
+        // ==================== الوضع الليلي/النهاري ====================
+        function toggleTheme() {
+            document.body.classList.toggle('light-theme');
+            localStorage.setItem('theme', document.body.classList.contains('light-theme') ? 'light' : 'dark');
+        }
+        function loadTheme() {
+            const theme = localStorage.getItem('theme');
+            if (theme === 'light') document.body.classList.add('light-theme');
+        }
+
+        // ==================== الصفحة الرئيسية ====================
+        function renderHome(main) {
+            const user = getCurrentUser();
+            let html = `
+                <section class="hero">
+                    <h1>أهلاً بك في متجر الواجبات</h1>
+                    <p>منصة المستقبل لبيع الواجبات لجميع التخصصات والصفوف</p>
+                    ${user ? `<p class="welcome">مرحباً، <strong>${user.full_name || user.username}</strong>! اختر تخصصك للبدء.</p>` :
+                    `<div class="auth-buttons">
+                        <button class="btn btn-primary" onclick="navigate('login')">تسجيل دخول</button>
+                        <button class="btn btn-secondary" onclick="navigate('register')">إنشاء حساب</button>
+                    </div>`}
+                </section>
+                <h2 class="section-title">التخصصات المتاحة (12 تخصص)</h2>
+                <div class="search-container">
+                    <input type="text" class="search-input" id="searchInput" placeholder="🔍 ابحث عن تخصص..." oninput="filterSpecs()">
+                </div>
+                <div class="grid" id="specGrid">
+                    ${specializations.map(spec => `
+                        <div class="spec-card" data-name="${spec.name}" data-desc="${spec.desc}" onclick="navigate('spec', ${spec.id})">
+                            <div class="spec-image-container">
+                                <img src="${spec.image}" class="spec-image" alt="${spec.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                <div class="spec-emoji" style="display:none;">${spec.emoji}</div>
+                            </div>
+                            <h3>${spec.name}</h3>
+                            <div class="rating-stars">★ ${getAverageRating(spec.id)} (${getRatings(spec.id).length} تقييم)</div>
+                            <div class="prices">
+                                <span>عاشر: ${spec.prices.grade10} د.أ</span>
+                                <span>أول ثانوي: ${spec.prices.grade11} د.أ</span>
+                                <span>توجيهي: ${spec.prices.tawjihi} د.أ</span>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            main.innerHTML = html;
+        }
+
+        function filterSpecs() {
+            const query = document.getElementById('searchInput').value.trim().toLowerCase();
+            document.querySelectorAll('.spec-card').forEach(card => {
+                const name = card.getAttribute('data-name').toLowerCase();
+                const desc = card.getAttribute('data-desc').toLowerCase();
+                card.style.display = (name.includes(query) || desc.includes(query)) ? 'block' : 'none';
+            });
+        }
+
+        // ==================== تسجيل دخول ====================
+        function renderLogin(main) {
+            main.innerHTML = `
+                <div class="auth-form">
+                    <h2>🔐 تسجيل الدخول</h2>
+                    <form onsubmit="login(event)">
+                        <div class="form-group">
+                            <label>اسم المستخدم</label>
+                            <input type="text" id="loginUsername" required>
+                        </div>
+                        <div class="form-group">
+                            <label>كلمة المرور</label>
+                            <input type="password" id="loginPassword" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width:100%;">دخول</button>
+                    </form>
+                    <p style="margin-top:20px; text-align:center;">ليس لديك حساب؟ <a href="#" style="color:var(--accent);" onclick="navigate('register'); return false;">سجل الآن</a></p>
+                </div>
+            `;
+        }
+
+        function login(event) {
+            event.preventDefault();
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            const user = getUsers().find(u => u.username === username && u.passwordHash === hashPassword(password));
+            if (user) {
+                setCurrentUser(username);
+                flashMessage('تم تسجيل الدخول بنجاح', 'success');
+                navigate('home');
+            } else {
+                flashMessage('اسم المستخدم أو كلمة المرور غير صحيحة', 'error');
+            }
+        }
+
+        // ==================== إنشاء حساب ====================
+        function renderRegister(main) {
+            let progress = 0;
+            main.innerHTML = `
+                <div class="loading-overlay" id="registerLoading">
+                    <div class="loader"></div>
+                    <p style="font-size:1.2rem; color:#ccc;">جاري تجهيز واجهة التسجيل...</p>
+                    <div class="progress-container">
+                        <div class="progress-bar" id="registerProgressBar"></div>
+                    </div>
+                </div>
+            `;
+            const interval = setInterval(() => {
+                progress += Math.random() * 10;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    setTimeout(() => showRegisterForm(main), 500);
+                }
+                document.getElementById('registerProgressBar').style.width = progress + '%';
+            }, 400);
+
+            setTimeout(() => {
+                clearInterval(interval);
+                if (document.getElementById('registerLoading')) showRegisterForm(main);
+            }, 7500);
+        }
+
+        function showRegisterForm(main) {
+            main.innerHTML = `
+                <div class="auth-form">
+                    <h2>📝 إنشاء حساب</h2>
+                    <form onsubmit="register(event)">
+                        <div class="form-group">
+                            <label>الاسم الكامل *</label>
+                            <input type="text" id="regFullName" required>
+                        </div>
+                        <div class="form-group">
+                            <label>اسم المستخدم *</label>
+                            <input type="text" id="regUsername" required>
+                        </div>
+                        <div class="form-group">
+                            <label>كلمة المرور *</label>
+                            <input type="password" id="regPassword" required minlength="6" oninput="checkPasswordStrength(this.value)">
+                            <div class="password-strength"><div class="password-strength-bar" id="passwordStrengthBar"></div></div>
+                            <small id="passwordStrengthText" style="color:var(--muted);"></small>
+                        </div>
+                        <div class="form-group">
+                            <label>تأكيد كلمة المرور *</label>
+                            <input type="password" id="regConfirmPassword" required minlength="6">
+                        </div>
+                        <div class="form-group">
+                            <label>الصف</label>
+                            <select id="regGrade">
+                                <option value="عاشر">عاشر</option>
+                                <option value="أول ثانوي">أول ثانوي</option>
+                                <option value="توجيهي">توجيهي</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>رقم الهاتف</label>
+                            <input type="text" id="regPhone">
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width:100%;">إنشاء الحساب</button>
+                    </form>
+                    <p style="margin-top:20px; text-align:center;">لديك حساب؟ <a href="#" style="color:var(--accent);" onclick="navigate('login'); return false;">سجل دخول</a></p>
+                </div>
+            `;
+        }
+
+        function checkPasswordStrength(password) {
+            const bar = document.getElementById('passwordStrengthBar');
+            const text = document.getElementById('passwordStrengthText');
+            let strength = 0;
+            if (password.length >= 6) strength++;
+            if (password.length >= 10) strength++;
+            if (/[A-Z]/.test(password)) strength++;
+            if (/[0-9]/.test(password)) strength++;
+            if (/[^A-Za-z0-9]/.test(password)) strength++;
+
+            let width = 0, colorClass = '', label = '';
+            if (strength <= 1) { width = 20; colorClass = 'strength-weak'; label = 'ضعيفة'; }
+            else if (strength <= 3) { width = 60; colorClass = 'strength-medium'; label = 'متوسطة'; }
+            else { width = 100; colorClass = 'strength-strong'; label = 'قوية'; }
+
+            bar.style.width = width + '%';
+            bar.className = 'password-strength-bar ' + colorClass;
+            text.textContent = 'قوة كلمة المرور: ' + label;
+        }
+
+        function register(event) {
+            event.preventDefault();
+            const fullName = document.getElementById('regFullName').value.trim();
+            const username = document.getElementById('regUsername').value.trim();
+            const password = document.getElementById('regPassword').value;
+            const confirmPassword = document.getElementById('regConfirmPassword').value;
+            const grade = document.getElementById('regGrade').value;
+            const phone = document.getElementById('regPhone').value.trim();
+
+            if (password !== confirmPassword) {
+                flashMessage('كلمتا المرور غير متطابقتين', 'error');
+                return;
+            }
+
+            const users = getUsers();
+            if (users.some(u => u.username === username)) {
+                flashMessage('اسم المستخدم موجود مسبقاً', 'error');
+                return;
+            }
+
+            const newUser = {
+                full_name: fullName,
+                username: username,
+                passwordHash: hashPassword(password),
+                grade: grade,
+                phone: phone,
+                role: 'user'
+            };
+            users.push(newUser);
+            saveUsers(users);
+            setCurrentUser(username);
+            flashMessage('تم إنشاء الحساب وتسجيل الدخول بنجاح', 'success');
+            navigate('home');
+        }
+
+        // ==================== الملف الشخصي ====================
+        function renderProfile(main) {
+            const user = getCurrentUser();
+            if (!user) return;
+            const orders = getUserOrders(user.username);
+            main.innerHTML = `
+                <div class="profile-card">
+                    <h2>👤 الملف الشخصي</h2>
+                    <form onsubmit="updateProfile(event)">
+                        <div class="form-group">
+                            <label>الاسم الكامل</label>
+                            <input type="text" id="profileFullName" value="${user.full_name || ''}" required>
+                        </div>
+                        <div class="form-group">
+                            <label>الصف</label>
+                            <select id="profileGrade">
+                                <option value="عاشر" ${user.grade === 'عاشر' ? 'selected' : ''}>عاشر</option>
+                                <option value="أول ثانوي" ${user.grade === 'أول ثانوي' ? 'selected' : ''}>أول ثانوي</option>
+                                <option value="توجيهي" ${user.grade === 'توجيهي' ? 'selected' : ''}>توجيهي</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>رقم الهاتف</label>
+                            <input type="text" id="profilePhone" value="${user.phone || ''}">
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width:100%;">حفظ التعديلات</button>
+                    </form>
+
+                    <div class="form-group" style="margin-top:30px;">
+                        <h3>تغيير كلمة المرور</h3>
+                        <form onsubmit="changePassword(event)">
+                            <div class="form-group">
+                                <label>كلمة المرور الحالية</label>
+                                <input type="password" id="currentPassword" required>
+                            </div>
+                            <div class="form-group">
+                                <label>كلمة المرور الجديدة</label>
+                                <input type="password" id="newPassword" required minlength="6">
+                            </div>
+                            <button type="submit" class="btn btn-secondary" style="width:100%;">تغيير كلمة المرور</button>
+                        </form>
+                    </div>
+
+                    <div class="form-group" style="margin-top:30px;">
+                        <h3>تصدير / استيراد الحساب</h3>
+                        <button class="btn btn-secondary" onclick="exportAccountQR()" style="width:100%; margin-bottom:10px;">📱 تصدير الحساب (QR)</button>
+                        <div id="qrCodeContainer" style="text-align:center;"></div>
+                        <label>لصق بيانات الحساب للاستيراد:</label>
+                        <textarea id="importData" rows="4"></textarea>
+                        <button class="btn btn-primary" onclick="importAccount()" style="width:100%; margin-top:10px;">استيراد الحساب</button>
+                    </div>
+
+                    <div class="orders-list">
+                        <h3 style="margin-bottom:15px; color:var(--gold);">📋 سجل طلباتك</h3>
+                        ${orders.length === 0 ? '<p style="color:var(--muted);">لا توجد طلبات بعد.</p>' :
+                        orders.map(order => `
+                            <div class="order-item">
+                                <strong>${order.specName}</strong> - ${order.gradeName} - <span style="color:var(--accent);">${order.price} د.أ</span>
+                                <br><small style="color:var(--muted);">${order.date}</small>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function updateProfile(event) {
+            event.preventDefault();
+            const fullName = document.getElementById('profileFullName').value.trim();
+            const grade = document.getElementById('profileGrade').value;
+            const phone = document.getElementById('profilePhone').value.trim();
+            const users = getUsers();
+            const username = getCurrentUser().username;
+            const idx = users.findIndex(u => u.username === username);
+            if (idx !== -1) {
+                users[idx].full_name = fullName;
+                users[idx].grade = grade;
+                users[idx].phone = phone;
+                saveUsers(users);
+                flashMessage('تم تحديث الملف الشخصي بنجاح', 'success');
+                navigate('profile');
+            }
+        }
+
+        function changePassword(event) {
+            event.preventDefault();
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const user = getCurrentUser();
+            if (hashPassword(currentPassword) !== user.passwordHash) {
+                flashMessage('كلمة المرور الحالية غير صحيحة', 'error');
+                return;
+            }
+            const users = getUsers();
+            const idx = users.findIndex(u => u.username === user.username);
+            if (idx !== -1) {
+                users[idx].passwordHash = hashPassword(newPassword);
+                saveUsers(users);
+                flashMessage('تم تغيير كلمة المرور بنجاح', 'success');
+                navigate('profile');
+            }
+        }
+
+        // ==================== تصدير/استيراد الحساب ====================
+        function exportAccountQR() {
+            const user = getCurrentUser();
+            if (!user) return;
+            const data = JSON.stringify({
+                username: user.username,
+                full_name: user.full_name,
+                grade: user.grade,
+                phone: user.phone,
+                passwordHash: user.passwordHash,
+                role: user.role
+            });
+            const encoded = btoa(unescape(encodeURIComponent(data)));
+            const qrContainer = document.getElementById('qrCodeContainer');
+            qrContainer.innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(encoded)}" alt="QR Code">`;
+            qrContainer.innerHTML += `<p style="color:var(--muted); font-size:0.8rem;">امسح هذا الكود من جهاز آخر أو انسخ النص التالي:</p>`;
+            qrContainer.innerHTML += `<textarea rows="2" style="width:100%; margin-top:10px;">${encoded}</textarea>`;
+            flashMessage('تم إنشاء رمز QR للحساب', 'success');
+        }
+
+        function importAccount() {
+            const encoded = document.getElementById('importData').value.trim();
+            if (!encoded) {
+                flashMessage('الرجاء لصق بيانات الحساب', 'error');
+                return;
+            }
+            try {
+                const json = decodeURIComponent(escape(atob(encoded)));
+                const data = JSON.parse(json);
+                const users = getUsers();
+                if (users.some(u => u.username === data.username)) {
+                    // تحديث بيانات الحساب الحالي
+                    const idx = users.findIndex(u => u.username === data.username);
+                    users[idx] = { ...users[idx], ...data };
+                } else {
+                    users.push(data);
+                }
+                saveUsers(users);
+                setCurrentUser(data.username);
+                flashMessage('تم استيراد الحساب وتسجيل الدخول بنجاح', 'success');
+                navigate('home');
+            } catch (e) {
+                flashMessage('بيانات غير صالحة', 'error');
+            }
+        }
+
+        // ==================== صفحة التخصص ====================
+        function renderSpec(main, specId) {
+            const spec = specializations.find(s => s.id === specId);
+            if (!spec) { navigate('home'); return; }
+            const user = getCurrentUser();
+            const avgRating = getAverageRating(spec.id);
+            const ratingCount = getRatings(spec.id).length;
+            main.innerHTML = `
+                <div class="loading-overlay" id="loadingOverlay">
+                    <div class="loader"></div>
+                    <p style="font-size:1.2rem; color:#ccc;">جاري تجهيز التخصص...</p>
+                </div>
+                <div class="spec-detail" id="specContent" style="display:none;">
+                    <div class="spec-emoji-large">${spec.emoji}</div>
+                    <h1 style="margin-bottom:20px;">${spec.name}</h1>
+                    <p style="color:var(--muted); margin-bottom:30px;">${spec.desc}</p>
+                    <div class="rating-stars" style="font-size:2rem;">★ ${avgRating} (${ratingCount} تقييم)</div>
+                    <div class="pricing">
+                        <div class="price-box"><span>الصف العاشر</span><strong>${spec.prices.grade10} د.أ</strong></div>
+                        <div class="price-box"><span>أول ثانوي</span><strong>${spec.prices.grade11} د.أ</strong></div>
+                        <div class="price-box"><span>توجيهي</span><strong>${spec.prices.tawjihi} د.أ</strong></div>
+                    </div>
+                    <form class="purchase-form" onsubmit="addToCart(event, ${spec.id})">
+                        <div class="form-group">
+                            <label>اختر الصف</label>
+                            <select id="purchaseGrade" required>
+                                <option value="grade10">عاشر</option>
+                                <option value="grade11">أول ثانوي</option>
+                                <option value="tawjihi">توجيهي</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width:100%;">أضف إلى السلة</button>
+                    </form>
+                    <div style="margin-top:30px;">
+                        <h3>تقييم التخصص</h3>
+                        <div class="rating-input" id="ratingStars">
+                            ${[1,2,3,4,5].map(i => `<span onclick="rateSpec(${spec.id}, ${i})" data-star="${i}">☆</span>`).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+            setTimeout(() => {
+                const loading = document.getElementById('loadingOverlay');
+                if (loading) loading.style.display = 'none';
+                const content = document.getElementById('specContent');
+                if (content) {
+                    content.style.display = 'block';
+                    content.style.animation = 'fadeIn 0.8s ease';
+                    // تعبئة النجوم الحالية إن وجدت
+                    const userRating = getRatings(spec.id).find(r => r.userId === user.username);
+                    if (userRating) {
+                        document.querySelectorAll(`#ratingStars span`).forEach(span => {
+                            if (parseInt(span.dataset.star) <= userRating.stars) span.textContent = '★';
+                        });
+                    }
+                }
+            }, 3000);
+        }
+
+        function rateSpec(specId, stars) {
+            const user = getCurrentUser();
+            saveRating(specId, user.username, stars);
+            document.querySelectorAll('#ratingStars span').forEach(span => {
+                if (parseInt(span.dataset.star) <= stars) span.textContent = '★';
+                else span.textContent = '☆';
+            });
+            flashMessage('تم تسجيل تقييمك بنجاح', 'success');
+        }
+
+        function addToCart(event, specId) {
+            event.preventDefault();
+            const grade = document.getElementById('purchaseGrade').value;
+            const spec = specializations.find(s => s.id === specId);
+            const price = spec.prices[grade];
+            const gradeName = gradeNames[grade];
+            const cart = getCart();
+            cart.push({ specId, specName: spec.name, grade, gradeName, price });
+            saveCart(cart);
+            flashMessage(`تمت إضافة ${spec.name} - ${gradeName} إلى السلة`, 'success');
+        }
+
+        // ==================== سلة المشتريات ====================
+        function renderCart(main) {
+            const user = getCurrentUser();
+            const cart = getCart();
+            if (cart.length === 0) {
+                main.innerHTML = `<div class="auth-form"><h2>🛒 سلة المشتريات</h2><p style="text-align:center;">السلة فارغة</p></div>`;
+                return;
+            }
+            let total = cart.reduce((acc, item) => acc + item.price, 0);
+            main.innerHTML = `
+                <div class="auth-form">
+                    <h2>🛒 سلة المشتريات</h2>
+                    <div class="cart-list">
+                        ${cart.map((item, index) => `
+                            <div class="cart-item">
+                                <div>
+                                    <strong>${item.specName}</strong> - ${item.gradeName} - ${item.price} د.أ
+                                </div>
+                                <button class="btn btn-secondary" style="padding:5px 10px;" onclick="removeFromCart(${index})">إزالة</button>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div style="margin:20px 0; text-align:center;">
+                        <strong>الإجمالي: ${total} د.أ</strong>
+                    </div>
+                    <button class="btn btn-primary" style="width:100%;" onclick="checkout()">إتمام الطلب</button>
+                </div>
+            `;
+        }
+
+        function removeFromCart(index) {
+            const cart = getCart();
+            cart.splice(index, 1);
+            saveCart(cart);
+            renderCart(document.getElementById('mainContent'));
+        }
+
+        function checkout() {
+            const user = getCurrentUser();
+            const cart = getCart();
+            if (cart.length === 0) return;
+            cart.forEach(item => {
+                saveOrder(user.username, {
+                    specName: item.specName,
+                    gradeName: item.gradeName,
+                    price: item.price,
+                    date: new Date().toLocaleString('ar-JO')
+                });
+            });
+            localStorage.removeItem('cart_' + user.username);
+            updateCartCount();
+            flashMessage('تم تسجيل طلبك بنجاح. يرجى تحويل المبلغ إلى المحفظة: 0779631789 أو الحسابات q._.cv / hamam.otoom', 'success');
+            navigate('home');
+        }
+
+        // ==================== لوحة تحكم الأدمن ====================
+        function renderAdminPanel(main) {
+            const users = getUsers();
+            main.innerHTML = `
+                <div class="admin-panel" style="max-width:800px;">
+                    <h2>⚙️ لوحة تحكم الأدمن</h2>
+                    <h3>المستخدمون (${users.length})</h3>
+                    <div class="user-list">
+                        ${users.map(u => `
+                            <div class="user-item">
+                                <div>
+                                    <strong>${u.full_name || u.username}</strong> (${u.username}) - ${u.role === 'admin' ? 'أدمن' : 'مستخدم'}
+                                </div>
+                                ${u.role !== 'admin' ? `<button class="btn btn-secondary" style="padding:5px 10px;" onclick="deleteUser('${u.username}')">حذف</button>` : ''}
+                            </div>
+                        `).join('')}
+                    </div>
+                    <h3 style="margin-top:30px;">جميع الطلبات</h3>
+                    <div class="orders-list">
+                        ${users.flatMap(u => getUserOrders(u.username).map(order => ({ ...order, username: u.username }))).map(order => `
+                            <div class="order-item">
+                                <strong>${order.username}</strong> - ${order.specName} - ${order.gradeName} - ${order.price} د.أ - ${order.date}
+                            </div>
+                        `).join('') || '<p>لا توجد طلبات.</p>'}
+                    </div>
+                </div>
+            `;
+        }
+
+        function deleteUser(username) {
+            if (confirm('هل أنت متأكد من حذف هذا المستخدم؟')) {
+                const users = getUsers().filter(u => u.username !== username);
+                saveUsers(users);
+                flashMessage('تم حذف المستخدم', 'success');
+                renderAdminPanel(document.getElementById('mainContent'));
+            }
+        }
+
+        // ==================== صفحة الدردشة ====================
+        function renderChat(main) {
+            const user = getCurrentUser();
+            const messages = getChatMessages();
+            main.innerHTML = `
+                <div class="chat-container">
+                    <div class="chat-header">💬 الدردشة المباشرة</div>
+                    <div class="chat-messages" id="chatMessages">
+                        ${messages.map(msg => {
+                            const isSent = msg.username === user.username;
+                            return `
+                                <div class="message ${isSent ? 'sent' : 'received'}">
+                                    <div class="msg-username">${msg.username} ${isSent ? '(أنت)' : ''}</div>
+                                    <div class="msg-text">${msg.text}</div>
+                                    <div class="msg-time">${msg.time}</div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                    <form class="chat-input-form" onsubmit="sendMessage(event)">
+                        <input type="text" id="chatInput" placeholder="اكتب رسالتك..." required>
+                        <button type="submit">إرسال</button>
+                    </form>
+                </div>
+            `;
+            const chatMessagesDiv = document.getElementById('chatMessages');
+            chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight;
+        }
+
+        function sendMessage(event) {
+            event.preventDefault();
+            const input = document.getElementById('chatInput');
+            const text = input.value.trim();
+            if (!text) return;
+            const user = getCurrentUser();
+            const message = {
+                username: user.username,
+                text: text,
+                time: new Date().toLocaleTimeString('ar-JO', { hour: '2-digit', minute: '2-digit' })
+            };
+            saveChatMessage(message);
+            renderChat(document.getElementById('mainContent'));
+            input.value = '';
+        }
+
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'chat_messages') {
+                const chatContainer = document.getElementById('chatMessages');
+                if (chatContainer) renderChat(document.getElementById('mainContent'));
+            }
+        });
+
+        // ==================== نسخ النص ====================
+        function copyText(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                flashMessage('تم النسخ بنجاح', 'success');
+            }).catch(() => {
+                flashMessage('تعذر النسخ', 'error');
+            });
+        }
+
+        // ==================== التنبيهات ====================
+        function flashMessage(message, type) {
+            const existing = document.querySelector('.flash-container');
+            if (existing) existing.remove();
+            const container = document.createElement('div');
+            container.className = 'flash-container';
+            const flash = document.createElement('div');
+            flash.className = `flash flash-${type}`;
+            flash.textContent = message;
+            container.appendChild(flash);
+            document.body.appendChild(container);
+            setTimeout(() => container.remove(), 5000);
+        }
+
+        function logout() {
+            logoutUser();
+            flashMessage('تم تسجيل الخروج', 'success');
+            navigate('home');
+        }
+
+        // ==================== إنشاء الجزيئات ====================
+        function createParticles() {
+            const bg = document.getElementById('bgAnimation');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.right = Math.random() * 100 + '%';
+                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                particle.style.animationDelay = (Math.random() * 10) + 's';
+                particle.style.width = (Math.random() * 4 + 2) + 'px';
+                particle.style.height = particle.style.width;
+                bg.appendChild(particle);
+            }
+        }
+
+        // ==================== التشغيل ====================
+        window.onload = function() {
+            initAdminAccounts();
+            loadTheme();
+            createParticles();
+            navigate('home');
+        };
+
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(20px); }
+                to { opacity: 1; transform: none; }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
